@@ -6,15 +6,10 @@ import { searchMovies,getpopularmovies } from "../service/api"
 
 
 export default function Home(){
-
-
      const [searchQuery,setsearchquery]=useState("")
      const [movies,setmovies]=useState([])
      const [error,seterror]=useState(null)
      const [loading,setloading]=useState(true)
-
-
-
 
      useEffect(()=>{
           const loadpopularMovies=async ()=>{
@@ -33,16 +28,22 @@ export default function Home(){
      },[])
 
 
-
-
-
-
-
-     const handleSearch=(event)=>{
+     const handleSearch= async (event)=>{
           event.preventDefault()
-          // setmovie(movie.filter((el)=>{
-          //      return !(searchQuery!=el.title)
-          // }))
+          if(!searchQuery.trim())return
+          if (loading) return
+          setloading(true)
+          try { const searchReasults = await searchMovies(searchQuery)
+               setmovies(searchReasults)
+               seterror(null)
+               
+          } catch (error) {
+               console.log(error)
+               seterror("failed to search movies...")
+          }finally{
+               setloading(false)
+          }
+
 
      }
 
